@@ -3,6 +3,7 @@
 Script runs interactively and connects to the [TMF8820/21/28 EVM](https://ams-osram.com/products/boards-kits-accessories/kits/ams-tmf882x-evm-db-demo-evaluation-kit)
 
 ![application_running.png](./application_running.png)
+[Video](https://github.com/user-attachments/assets/16422a6b-2bad-4d12-b3fb-853ec489fe00)
 
 Howto execute:
 1. You need to have Python3 installed; inside Python3 it needs matplotlib library installed
