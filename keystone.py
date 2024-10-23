@@ -10,7 +10,7 @@
 # 
 # Howto execute:
 # 1. You need to have Python3 installed; inside Python3 it needs matplotlib library installed
-# 2. EVM of [TMF882X](https://ams-osram.com/products/boards-kits-accessories/kits/ams-tmf882x-evm-db-demo-evaluation-kit) installed and running before starting the script
+# 2. EVM of [TMF882X](https://ams-osram.com/products/boards-kits-accessories/kits/ams-tmf882x-evm-db-demo-evaluation-kit) installed and EVM GUI running before starting the script
 # 3. Double click 'keystone.py' or execute 'keystone.ipynb' in a JupyterLab environment
 # 
 # Operation:
