@@ -6,6 +6,7 @@
 # Script runs interactively and connects to the [TMF8820/21/28 EVM](https://ams-osram.com/products/boards-kits-accessories/kits/ams-tmf882x-evm-db-demo-evaluation-kit)
 # 
 # ![application_running.png](./application_running.png)
+# [Video](https://github.com/user-attachments/assets/16422a6b-2bad-4d12-b3fb-853ec489fe00)
 # 
 # Howto execute:
 # 1. You need to have Python3 installed; inside Python3 it needs matplotlib library installed
@@ -81,13 +82,15 @@ import matplotlib.gridspec as gridspec
 
 def calc_angle(center, edge, alpha):
     '''
-    Calculate angle of triangle to a perpendicular wall where
+    Args:
+        Calculate angle of triangle to a perpendicular wall where
 
-    alpha = anlge between dist1 and dist2 (defined by SPAD mask) in degrees
-    center = distance of center zone in [mm]
-    edge = distance of edge zone in [mm]
+        alpha = angle between dist1 and dist2 (defined by SPAD mask) in degrees
+        center = distance of center zone in [mm]
+        edge = distance of edge zone in [mm]
 
-    returns angle in degrees (not radians)
+    Returns:
+        angle in degrees (not radians)
     '''
     try:
         # apply law of cosines to get third length of triangle
@@ -105,14 +108,6 @@ def calc_angle(center, edge, alpha):
         return (0)
 
 
-# In[3]:
-
-
-# test function
-# for i in range (100, 120):
-#     print (f'center=100mm edge={i}mm angle={calc_angle(100, i, 20):6.1f}deg')
-
-
 # In[4]:
 
 
@@ -121,15 +116,15 @@ tof_id = None # tof unique ID
 
 def get_data_from_EVM_GUI(sock) -> (str, int, int, int, int):
     '''Process information from TMF882X EVM GUI and extract data as needed
+    Args:
+        sock -- an open socket for the connection to the EVM GUI; connection errors need to be handled in calling function
 
-    sock -- an open socket for the connection to the EVM GUI; connection errors need to be handled in calling function
-
-    return value: (description, xtalk)
-    string description -- a textual description for displaying the result or any error
-    int xtalk -- integer with amount of crosstalk; returns 0 in case of error
-    int background -- the amount of background light, should be much lower than xtalk
-    int iterations -- number of iterations for this measurement
-    obj -- object data; array of integers of distance / confidence for each ch
+    Returns:    
+        string description -- a textual description for displaying the result or any error
+        int xtalk -- integer with amount of crosstalk; returns 0 in case of error
+        int background -- the amount of background light, should be much lower than xtalk
+        int iterations -- number of iterations for this measurement
+        obj -- object data; array of integers of distance / confidence for each channel
     '''
     xtalk = [0]*10  # initialize
     background = [0]*10
@@ -166,14 +161,25 @@ def get_data_from_EVM_GUI(sock) -> (str, int, int, int, int):
 
 
 def pick_best(obj):
-    '''Check if there is a second target and use this if it has higher confidence'''
+    '''Check if there is a second target and use this if it has higher confidence
+    Args:
+        obj -- object data; array of integers of distance / confidence for each channel
+    Returns:
+        single selected object
+    '''
     if obj[1] > obj[3]:  # compare confidence first/second target
         return obj[0]  # return first target
     else:
         return obj[2]  # return second target1
 
 
-def animate(i, axs, sock): 
+def animate(i, axs, sock):
+    '''Run animantion
+    Args:
+        i -- needed for animation call
+        axs -- axes for drawings
+        sock -- socket for communication
+    '''
     description, xtalk, background, iterations, obj = get_data_from_EVM_GUI(sock)
     for i in range(10):
         axs[i].clear()
@@ -195,7 +201,7 @@ def animate(i, axs, sock):
                 if (obj[index+2]>0):  # second object?
                     axs[i].annotate(f"{obj[index+2]}mm", (0.5, 0.4), ha='center', va='center')   # distance
                     axs[i].annotate(obj[index+3], (0.5, 0.2), ha='center', va='center') # confidence   
-#                # add background and crosstalk
+#                # add background and crosstalk - uncomment if you want to show this parameters as well
 #                axs[i].annotate(f'xtalk {xtalk[i+1]}', (0.5, 0.4), ha='center', va='center')
 #                axs[i].annotate(f'ambient bg. {int(background[i+1])}', (0.5, 0.2), ha='center', va='center')
 
@@ -214,8 +220,6 @@ def animate(i, axs, sock):
             left_angle = calc_angle(center, left, angle_zone_left_right)
             right_angle = calc_angle(center, right, angle_zone_left_right)
             ax_info.annotate(tof_id, (0.5, 0.7), ha='center', va='center')
-            #ax_info.annotate(f' Distances top {top} left {left} center {center} right {right} bottom {bottom}',
-            #                 (0.1, 0.5), ha='left', va='center')
             text_color = 'darkblue'
             max_angle_deviation = 15
             if (top_angle + bottom_angle > max_angle_deviation) or (left_angle + right_angle > max_angle_deviation):
